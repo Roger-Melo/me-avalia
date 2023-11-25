@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 
+const getTotalMinutes = watchedMovies => watchedMovies
+  .reduce((acc, item) => acc + +item.runtime.split(' ')[0], 0)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
@@ -107,11 +110,11 @@ const App = () => {
                   <div>
                     <p>
                       <span>#️⃣</span>{' '}
-                      <span>X Filmes</span>
+                      <span>{watchedMovies.length} Filmes</span>
                     </p>
                     <p>
                       <span>⏳</span>{' '}
-                      <span>XXX min</span>
+                      <span>{getTotalMinutes(watchedMovies)} min</span>
                     </p>
                   </div>
                 </div>
