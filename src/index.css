@@ -279,6 +279,19 @@ body {
   gap: 2.4rem;
 }
 
+.form-rating select {
+  background-color: var(--color-background-500);
+  border-radius: 0.3rem;
+  padding: 1rem;
+  width: 30%;
+}
+
+.form-rating div {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
 .btn-add {
   background-color: var(--color-primary);
   color: var(--color-text);
@@ -289,6 +302,7 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
+  width: 70%;
 }
 
 .btn-add:hover {

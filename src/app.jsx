@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 const App = () => {
   const [movies, setMovies] = useState([])
+  const [watchedMovies, setWatchedMovies] = useState([])
   const [clickedMovie, setClickedMovie] = useState(null)
 
   useEffect(() => {
@@ -23,9 +24,17 @@ const App = () => {
       .catch(console.log)
   }, [])
 
+  const handleClickBtnDelete = id => setWatchedMovies(prev => prev.filter(p => p.id !== id))
   const handleClickBtnBack = () => setClickedMovie(null)
   const handleClickMovie = clickedMovie => setClickedMovie(prev =>
     prev?.id === clickedMovie.id ? null : clickedMovie)
+
+  const handleSubmitRating = e => {
+    e.preventDefault()
+    const { rating } = e.target.elements
+    setWatchedMovies(prev => [...prev, { ...clickedMovie, userRating: rating.value }])
+    setClickedMovie(null)
+  }
 
   return (
     <>
@@ -70,10 +79,18 @@ const App = () => {
                     <p><span>⭐️</span>{clickedMovie.imdbRating} IMDb rating</p>
                   </div>
                 </header>
-
                 <section>
                   <div className="rating">
-                    <div>Avaliação aqui</div>
+                    <form onSubmit={handleSubmitRating} className="form-rating">
+                      <p>Qual nota você dá para este filme?</p>
+                      <div>
+                        <select name="rating" defaultValue={1}>
+                          {Array.from({ length: 10 }, (_, i) =>
+                            <option key={i} value={i + 1}>{i + 1}</option>)}
+                        </select>
+                        <button className="btn-add">+ Adicionar à lista</button>
+                      </div>
+                    </form>
                   </div>
                   <p>
                     <em>{clickedMovie.plot}</em>
@@ -99,46 +116,29 @@ const App = () => {
                   </div>
                 </div>
                 <ul className="list">
-                  <li>
-                    <img src="https://m.media-amazon.com/images/M/MV5BMjM2MDgxMDg0Nl5BMl5BanBnXkFtZTgwNTM2OTM5NDE@._V1_SX300.jpg" alt="Poster de Jurassic Park" />
-                    <h3>Jurassic Park</h3>
-                    <div>
-                      <p>
-                        <span>⭐️</span>
-                        <span>X.X</span>
-                      </p>
-                      <p>
-                        <span>🌟</span>
-                        <span>X</span>
-                      </p>
-                      <p>
-                        <span>⏳</span>
-                        <span>XXX min</span>
-                      </p>
-
-                      <button className="btn-delete">X</button>
-                    </div>
-                  </li>
-                  <li>
-                    <img src="https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg" alt="Poster de The Dark Knight" />
-                    <h3>The Dark Knight</h3>
-                    <div>
-                      <p>
-                        <span>⭐️</span>
-                        <span>X.X</span>
-                      </p>
-                      <p>
-                        <span>🌟</span>
-                        <span>X</span>
-                      </p>
-                      <p>
-                        <span>⏳</span>
-                        <span>XXX min</span>
-                      </p>
-
-                      <button className="btn-delete">X</button>
-                    </div>
-                  </li>
+                  {watchedMovies.map(m => (
+                    <li key={m.id}>
+                      <img src={m.poster} alt={`Poster de ${m.title}`} />
+                      <h3>{m.title}</h3>
+                      <div>
+                        <p>
+                          <span>⭐️</span>
+                          <span>{m.imdbRating}</span>
+                        </p>
+                        <p>
+                          <span>🌟</span>
+                          <span>{m.userRating}</span>
+                        </p>
+                        <p>
+                          <span>⏳</span>
+                          <span>{m.runtime}</span>
+                        </p>
+                        <button onClick={() => handleClickBtnDelete(m.id)} className="btn-delete">
+                          X
+                        </button>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
               </>
             )}
