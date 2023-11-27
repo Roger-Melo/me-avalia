@@ -3,26 +3,21 @@ import { useEffect, useState } from 'react'
 const getTotalMinutes = watchedMovies => watchedMovies
   .reduce((acc, item) => acc + +item.runtime.split(' ')[0], 0)
 
+const apiKey = import.meta.env.VITE_API_KEY
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
   const [clickedMovie, setClickedMovie] = useState(null)
 
   useEffect(() => {
-    fetch('https://raw.githubusercontent.com/Roger-Melo/fake-data/main/fake-movies.json')
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=jurassic+park`)
       .then(r => r.json())
-      .then(data => setMovies(data.map(movie => ({
+      .then(data => setMovies(data.Search.map(movie => ({
         id: movie.imdbID,
         title: movie.Title,
         year: movie.Year,
-        imdbRating: movie.imdbRating,
-        runtime: movie.Runtime,
-        poster: movie.Poster,
-        plot: movie.Plot,
-        actors: movie.Actors,
-        director: movie.Director,
-        released: movie.Released,
-        genre: movie.Genre
+        poster: movie.Poster
       }))))
       .catch(console.log)
   }, [])
@@ -39,17 +34,41 @@ const App = () => {
     setClickedMovie(null)
   }
 
+  const handleSearchMovie = e => {
+    e.preventDefault()
+    const { searchMovie } = e.target.elements
+
+    if (searchMovie.value.length < 2) {
+      return
+    }
+
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${searchMovie.value}`)
+      .then(r => r.json())
+      .then(data => setMovies(data.Search.map(movie => ({
+        id: movie.imdbID,
+        title: movie.Title,
+        year: movie.Year,
+        poster: movie.Poster
+      }))))
+      .catch(console.log)
+  }
+
   return (
     <>
       <nav className="nav-bar">
         <img className="logo" src="logo-me-avalia.png" alt="Me avalia" />
-        <form className="form-search">
-          <input className="search" type="text" placeholder="Buscar filmes..." autoFocus />
+        <form onSubmit={handleSearchMovie} className="form-search">
+          <input
+            name="searchMovie"
+            className="search"
+            type="text"
+            placeholder="Buscar filmes..."
+            autoFocus
+          />
           <button className="btn-search">Buscar</button>
         </form>
         <p className="num-results"><strong>{movies.length}</strong> Resultados</p>
       </nav>
-
       <main className="main">
         <div className="box">
           <ul className="list list-movies">
@@ -67,7 +86,6 @@ const App = () => {
             ))}
           </ul>
         </div>
-
         <div className="box">
           {clickedMovie
             ? (
