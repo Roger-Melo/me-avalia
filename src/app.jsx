@@ -24,8 +24,30 @@ const App = () => {
 
   const handleClickBtnDelete = id => setWatchedMovies(prev => prev.filter(p => p.id !== id))
   const handleClickBtnBack = () => setClickedMovie(null)
-  const handleClickMovie = clickedMovie => setClickedMovie(prev =>
-    prev?.id === clickedMovie.id ? null : clickedMovie)
+  const handleClickMovie = currentClickedMovie => {
+    const prevClickedMovie = clickedMovie
+    if (prevClickedMovie?.id === currentClickedMovie.id) {
+      setClickedMovie(null)
+      return
+    }
+
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${currentClickedMovie.id}`)
+      .then(r => r.json())
+      .then(movie => setClickedMovie({
+        id: movie.imdbID,
+        title: movie.Title,
+        year: movie.Year,
+        imdbRating: movie.imdbRating,
+        runtime: movie.Runtime,
+        poster: movie.Poster,
+        plot: movie.Plot,
+        actors: movie.Actors,
+        director: movie.Director,
+        released: movie.Released,
+        genre: movie.Genre
+      }))
+      .catch(console.log)
+  }
 
   const handleSubmitRating = e => {
     e.preventDefault()
