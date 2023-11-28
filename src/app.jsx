@@ -85,6 +85,40 @@ const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
   </ul>
 )
 
+const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => (
+  <div className="details">
+    <header>
+      <button className="btn-back" onClick={onClickBtnBack}>&larr;</button>
+      <img src={clickedMovie.poster} alt={`Poster de ${clickedMovie.title}`} />
+      <div className="details-overview">
+        <h2>{clickedMovie.title}</h2>
+        <p>{clickedMovie.released} &bull; {clickedMovie.runtime}</p>
+        <p>{clickedMovie.genre}</p>
+        <p><span>⭐️</span>{clickedMovie.imdbRating} IMDb rating</p>
+      </div>
+    </header>
+    <section>
+      <div className="rating">
+        <form onSubmit={onSubmitRating} className="form-rating">
+          <p>Qual nota você dá para este filme?</p>
+          <div>
+            <select name="rating" defaultValue={1}>
+              {Array.from({ length: 10 }, (_, i) =>
+                <option key={i} value={i + 1}>{i + 1}</option>)}
+            </select>
+            <button className="btn-add">+ Adicionar à lista</button>
+          </div>
+        </form>
+      </div>
+      <p>
+        <em>{clickedMovie.plot}</em>
+      </p>
+      <p>Elenco: {clickedMovie.actors}</p>
+      <p>Direção: {clickedMovie.director}</p>
+    </section>
+  </div>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
@@ -166,37 +200,11 @@ const App = () => {
         <ListBox>
           {clickedMovie
             ? (
-              <div className="details">
-                <header>
-                  <button className="btn-back" onClick={handleClickBtnBack}>&larr;</button>
-                  <img src={clickedMovie.poster} alt={`Poster de ${clickedMovie.title}`} />
-                  <div className="details-overview">
-                    <h2>{clickedMovie.title}</h2>
-                    <p>{clickedMovie.released} &bull; {clickedMovie.runtime}</p>
-                    <p>{clickedMovie.genre}</p>
-                    <p><span>⭐️</span>{clickedMovie.imdbRating} IMDb rating</p>
-                  </div>
-                </header>
-                <section>
-                  <div className="rating">
-                    <form onSubmit={handleSubmitRating} className="form-rating">
-                      <p>Qual nota você dá para este filme?</p>
-                      <div>
-                        <select name="rating" defaultValue={1}>
-                          {Array.from({ length: 10 }, (_, i) =>
-                            <option key={i} value={i + 1}>{i + 1}</option>)}
-                        </select>
-                        <button className="btn-add">+ Adicionar à lista</button>
-                      </div>
-                    </form>
-                  </div>
-                  <p>
-                    <em>{clickedMovie.plot}</em>
-                  </p>
-                  <p>Elenco: {clickedMovie.actors}</p>
-                  <p>Direção: {clickedMovie.director}</p>
-                </section>
-              </div>
+              <MovieDetails
+                clickedMovie={clickedMovie}
+                onClickBtnBack={handleClickBtnBack}
+                onSubmitRating={handleSubmitRating}
+              />
             )
             : (
               <>
