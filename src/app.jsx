@@ -5,6 +5,23 @@ const getTotalMinutes = watchedMovies => watchedMovies
 
 const apiKey = import.meta.env.VITE_API_KEY
 
+const NavBar = ({ movies, onSearchMovie }) => (
+  <nav className="nav-bar">
+    <img className="logo" src="logo-me-avalia.png" alt="Me avalia" />
+    <form onSubmit={onSearchMovie} className="form-search">
+      <input
+        name="searchMovie"
+        className="search"
+        type="text"
+        placeholder="Buscar filmes..."
+        autoFocus
+      />
+      <button className="btn-search">Buscar</button>
+    </form>
+    <p className="num-results"><strong>{movies.length}</strong> Resultados</p>
+  </nav>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
@@ -77,20 +94,7 @@ const App = () => {
 
   return (
     <>
-      <nav className="nav-bar">
-        <img className="logo" src="logo-me-avalia.png" alt="Me avalia" />
-        <form onSubmit={handleSearchMovie} className="form-search">
-          <input
-            name="searchMovie"
-            className="search"
-            type="text"
-            placeholder="Buscar filmes..."
-            autoFocus
-          />
-          <button className="btn-search">Buscar</button>
-        </form>
-        <p className="num-results"><strong>{movies.length}</strong> Resultados</p>
-      </nav>
+      <NavBar movies={movies} onSearchMovie={handleSearchMovie} />
       <main className="main">
         <div className="box">
           <ul className="list list-movies">
