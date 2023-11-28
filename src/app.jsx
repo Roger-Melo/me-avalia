@@ -40,6 +40,23 @@ const History = ({ watchedMovies }) => (
   </div>
 )
 
+const Movies = ({ movies, onClickMovie }) => (
+  <ul className="list list-movies">
+    {movies.map(movie => (
+      <li key={movie.id} onClick={() => onClickMovie(movie)}>
+        <img src={movie.poster} alt={`Poster de ${movie.title}`} />
+        <h3>{movie.title}</h3>
+        <div>
+          <p>
+            <span>📅</span>
+            <span>{movie.year}</span>
+          </p>
+        </div>
+      </li>
+    ))}
+  </ul>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
@@ -116,20 +133,7 @@ const App = () => {
       <main className="main">
 
         <ListBox>
-          <ul className="list list-movies">
-            {movies.map(movie => (
-              <li key={movie.id} onClick={() => handleClickMovie(movie)}>
-                <img src={movie.poster} alt={`Poster de ${movie.title}`} />
-                <h3>{movie.title}</h3>
-                <div>
-                  <p>
-                    <span>📅</span>
-                    <span>{movie.year}</span>
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <Movies movies={movies} onClickMovie={handleClickMovie} />
         </ListBox>
         <ListBox>
           {clickedMovie
