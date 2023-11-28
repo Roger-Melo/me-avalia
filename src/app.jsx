@@ -5,6 +5,120 @@ const getTotalMinutes = watchedMovies => watchedMovies
 
 const apiKey = import.meta.env.VITE_API_KEY
 
+const NavBar = ({ movies, onSearchMovie }) => (
+  <nav className="nav-bar">
+    <img className="logo" src="logo-me-avalia.png" alt="Me avalia" />
+    <form onSubmit={onSearchMovie} className="form-search">
+      <input
+        name="searchMovie"
+        className="search"
+        type="text"
+        placeholder="Buscar filmes..."
+        autoFocus
+      />
+      <button className="btn-search">Buscar</button>
+    </form>
+    <p className="num-results"><strong>{movies.length}</strong> Resultados</p>
+  </nav>
+)
+
+const ListBox = ({ children }) => <div className="box">{children}</div>
+
+const History = ({ watchedMovies }) => (
+  <div className="history">
+    <h2>Histórico</h2>
+    <div>
+      <p>
+        <span>#️⃣</span>{' '}
+        <span>{watchedMovies.length} Filmes</span>
+      </p>
+      <p>
+        <span>⏳</span>{' '}
+        <span>{getTotalMinutes(watchedMovies)} min</span>
+      </p>
+    </div>
+  </div>
+)
+
+const Movies = ({ movies, onClickMovie }) => (
+  <ul className="list list-movies">
+    {movies.map(movie => (
+      <li key={movie.id} onClick={() => onClickMovie(movie)}>
+        <img src={movie.poster} alt={`Poster de ${movie.title}`} />
+        <h3>{movie.title}</h3>
+        <div>
+          <p>
+            <span>📅</span>
+            <span>{movie.year}</span>
+          </p>
+        </div>
+      </li>
+    ))}
+  </ul>
+)
+
+const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
+  <ul className="list">
+    {watchedMovies.map(m => (
+      <li key={m.id}>
+        <img src={m.poster} alt={`Poster de ${m.title}`} />
+        <h3>{m.title}</h3>
+        <div>
+          <p>
+            <span>⭐️</span>
+            <span>{m.imdbRating}</span>
+          </p>
+          <p>
+            <span>🌟</span>
+            <span>{m.userRating}</span>
+          </p>
+          <p>
+            <span>⏳</span>
+            <span>{m.runtime}</span>
+          </p>
+          <button onClick={() => onClickBtnDelete(m.id)} className="btn-delete">
+            X
+          </button>
+        </div>
+      </li>
+    ))}
+  </ul>
+)
+
+const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => (
+  <div className="details">
+    <header>
+      <button className="btn-back" onClick={onClickBtnBack}>&larr;</button>
+      <img src={clickedMovie.poster} alt={`Poster de ${clickedMovie.title}`} />
+      <div className="details-overview">
+        <h2>{clickedMovie.title}</h2>
+        <p>{clickedMovie.released} &bull; {clickedMovie.runtime}</p>
+        <p>{clickedMovie.genre}</p>
+        <p><span>⭐️</span>{clickedMovie.imdbRating} IMDb rating</p>
+      </div>
+    </header>
+    <section>
+      <div className="rating">
+        <form onSubmit={onSubmitRating} className="form-rating">
+          <p>Qual nota você dá para este filme?</p>
+          <div>
+            <select name="rating" defaultValue={1}>
+              {Array.from({ length: 10 }, (_, i) =>
+                <option key={i} value={i + 1}>{i + 1}</option>)}
+            </select>
+            <button className="btn-add">+ Adicionar à lista</button>
+          </div>
+        </form>
+      </div>
+      <p>
+        <em>{clickedMovie.plot}</em>
+      </p>
+      <p>Elenco: {clickedMovie.actors}</p>
+      <p>Direção: {clickedMovie.director}</p>
+    </section>
+  </div>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
@@ -77,115 +191,34 @@ const App = () => {
 
   return (
     <>
-      <nav className="nav-bar">
-        <img className="logo" src="logo-me-avalia.png" alt="Me avalia" />
-        <form onSubmit={handleSearchMovie} className="form-search">
-          <input
-            name="searchMovie"
-            className="search"
-            type="text"
-            placeholder="Buscar filmes..."
-            autoFocus
-          />
-          <button className="btn-search">Buscar</button>
-        </form>
-        <p className="num-results"><strong>{movies.length}</strong> Resultados</p>
-      </nav>
+      <NavBar movies={movies} onSearchMovie={handleSearchMovie} />
       <main className="main">
-        <div className="box">
-          <ul className="list list-movies">
-            {movies.map(movie => (
-              <li key={movie.id} onClick={() => handleClickMovie(movie)}>
-                <img src={movie.poster} alt={`Poster de ${movie.title}`} />
-                <h3>{movie.title}</h3>
-                <div>
-                  <p>
-                    <span>📅</span>
-                    <span>{movie.year}</span>
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="box">
+
+        <ListBox>
+          <Movies movies={movies} onClickMovie={handleClickMovie} />
+        </ListBox>
+        <ListBox>
           {clickedMovie
             ? (
-              <div className="details">
-                <header>
-                  <button className="btn-back" onClick={handleClickBtnBack}>&larr;</button>
-                  <img src={clickedMovie.poster} alt={`Poster de ${clickedMovie.title}`} />
-                  <div className="details-overview">
-                    <h2>{clickedMovie.title}</h2>
-                    <p>{clickedMovie.released} &bull; {clickedMovie.runtime}</p>
-                    <p>{clickedMovie.genre}</p>
-                    <p><span>⭐️</span>{clickedMovie.imdbRating} IMDb rating</p>
-                  </div>
-                </header>
-                <section>
-                  <div className="rating">
-                    <form onSubmit={handleSubmitRating} className="form-rating">
-                      <p>Qual nota você dá para este filme?</p>
-                      <div>
-                        <select name="rating" defaultValue={1}>
-                          {Array.from({ length: 10 }, (_, i) =>
-                            <option key={i} value={i + 1}>{i + 1}</option>)}
-                        </select>
-                        <button className="btn-add">+ Adicionar à lista</button>
-                      </div>
-                    </form>
-                  </div>
-                  <p>
-                    <em>{clickedMovie.plot}</em>
-                  </p>
-                  <p>Elenco: {clickedMovie.actors}</p>
-                  <p>Direção: {clickedMovie.director}</p>
-                </section>
-              </div>
+              <MovieDetails
+                clickedMovie={clickedMovie}
+                onClickBtnBack={handleClickBtnBack}
+                onSubmitRating={handleSubmitRating}
+              />
             )
             : (
               <>
-                <div className="summary">
-                  <h2>Histórico</h2>
-                  <div>
-                    <p>
-                      <span>#️⃣</span>{' '}
-                      <span>{watchedMovies.length} Filmes</span>
-                    </p>
-                    <p>
-                      <span>⏳</span>{' '}
-                      <span>{getTotalMinutes(watchedMovies)} min</span>
-                    </p>
-                  </div>
-                </div>
-                <ul className="list">
-                  {watchedMovies.map(m => (
-                    <li key={m.id}>
-                      <img src={m.poster} alt={`Poster de ${m.title}`} />
-                      <h3>{m.title}</h3>
-                      <div>
-                        <p>
-                          <span>⭐️</span>
-                          <span>{m.imdbRating}</span>
-                        </p>
-                        <p>
-                          <span>🌟</span>
-                          <span>{m.userRating}</span>
-                        </p>
-                        <p>
-                          <span>⏳</span>
-                          <span>{m.runtime}</span>
-                        </p>
-                        <button onClick={() => handleClickBtnDelete(m.id)} className="btn-delete">
-                          X
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <History watchedMovies={watchedMovies} />
+                {watchedMovies.length > 0 && (
+                  <WatchedMovies
+                    watchedMovies={watchedMovies}
+                    onClickBtnDelete={handleClickBtnDelete}
+                  />
+                )}
               </>
-            )}
-        </div>
+            )
+          }
+        </ListBox>
       </main>
     </>
   )
