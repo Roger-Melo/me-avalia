@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 const getTotalMinutes = watchedMovies => watchedMovies
   .reduce((acc, item) => acc + (item.runtime === 'N/A' ? 0 : +item.runtime.split(' ')[0]), 0)
 
+const getMoviePoster = src => src === 'N/A' ? '404-img.jpg' : src
+
 const apiKey = import.meta.env.VITE_API_KEY
 
 const NavBar = ({ movies, onSearchMovie }) => (
@@ -44,7 +46,7 @@ const Movies = ({ movies, onClickMovie }) => (
   <ul className="list list-movies">
     {movies.map(movie => (
       <li key={movie.id} onClick={() => onClickMovie(movie)}>
-        <img src={movie.poster} alt={`Poster de ${movie.title}`} />
+        <img src={getMoviePoster(movie.poster)} alt={`Poster de ${movie.title}`} />
         <h3>{movie.title}</h3>
         <div>
           <p>
@@ -61,7 +63,7 @@ const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
   <ul className="list">
     {watchedMovies.map(m => (
       <li key={m.id}>
-        <img src={m.poster} alt={`Poster de ${m.title}`} />
+        <img src={getMoviePoster(m.poster)} alt={`Poster de ${m.title}`} />
         <h3>{m.title}</h3>
         <div>
           <p>
@@ -76,9 +78,7 @@ const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
             <span>⏳</span>
             <span>{m.runtime}</span>
           </p>
-          <button onClick={() => onClickBtnDelete(m.id)} className="btn-delete">
-            X
-          </button>
+          <button onClick={() => onClickBtnDelete(m.id)} className="btn-delete">X</button>
         </div>
       </li>
     ))}
@@ -89,7 +89,7 @@ const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => (
   <div className="details">
     <header>
       <button className="btn-back" onClick={onClickBtnBack}>&larr;</button>
-      <img src={clickedMovie.poster} alt={`Poster de ${clickedMovie.title}`} />
+      <img src={getMoviePoster(clickedMovie.poster)} alt={`Poster de ${clickedMovie.title}`} />
       <div className="details-overview">
         <h2>{clickedMovie.title}</h2>
         <p>{clickedMovie.released} &bull; {clickedMovie.runtime}</p>
@@ -103,16 +103,13 @@ const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => (
           <p>Qual nota você dá para este filme?</p>
           <div>
             <select name="rating" defaultValue={1}>
-              {Array.from({ length: 10 }, (_, i) =>
-                <option key={i} value={i + 1}>{i + 1}</option>)}
+              {Array.from({ length: 10 }, (_, i) => <option key={i} value={i + 1}>{i + 1}</option>)}
             </select>
             <button className="btn-add">+ Adicionar à lista</button>
           </div>
         </form>
       </div>
-      <p>
-        <em>{clickedMovie.plot}</em>
-      </p>
+      <p><em>{clickedMovie.plot}</em></p>
       <p>Elenco: {clickedMovie.actors}</p>
       <p>Direção: {clickedMovie.director}</p>
     </section>
@@ -193,7 +190,6 @@ const App = () => {
     <>
       <NavBar movies={movies} onSearchMovie={handleSearchMovie} />
       <main className="main">
-
         <ListBox>
           <Movies movies={movies} onClickMovie={handleClickMovie} />
         </ListBox>
