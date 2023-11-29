@@ -116,18 +116,9 @@ const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => (
   </div>
 )
 
-const App = () => {
-  const [movies, setMovies] = useState([])
+const Main = ({ movies }) => {
   const [watchedMovies, setWatchedMovies] = useState([])
   const [clickedMovie, setClickedMovie] = useState(null)
-
-  useEffect(() => {
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=jurassic+park`)
-      .then(r => r.json())
-      .then(data => setMovies(data.Search.map(movie =>
-        ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
-      .catch(console.log)
-  }, [])
 
   const handleClickBtnDelete = id => setWatchedMovies(prev => prev.filter(p => p.id !== id))
   const handleClickBtnBack = () => setClickedMovie(null)
@@ -163,6 +154,48 @@ const App = () => {
     setClickedMovie(null)
   }
 
+  return (
+    <main className="main">
+      <ListBox>
+        <Movies movies={movies} onClickMovie={handleClickMovie} />
+      </ListBox>
+      <ListBox>
+        {clickedMovie
+          ? (
+            <MovieDetails
+              clickedMovie={clickedMovie}
+              onClickBtnBack={handleClickBtnBack}
+              onSubmitRating={handleSubmitRating}
+            />
+          )
+          : (
+            <>
+              <History watchedMovies={watchedMovies} />
+              {watchedMovies.length > 0 && (
+                <WatchedMovies
+                  watchedMovies={watchedMovies}
+                  onClickBtnDelete={handleClickBtnDelete}
+                />
+              )}
+            </>
+          )
+        }
+      </ListBox>
+    </main>
+  )
+}
+
+const App = () => {
+  const [movies, setMovies] = useState([])
+
+  useEffect(() => {
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=jurassic+park`)
+      .then(r => r.json())
+      .then(data => setMovies(data.Search.map(movie =>
+        ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
+      .catch(console.log)
+  }, [])
+
   const handleSearchMovie = e => {
     e.preventDefault()
     const { searchMovie } = e.target.elements
@@ -181,33 +214,7 @@ const App = () => {
   return (
     <>
       <NavBar movies={movies} onSearchMovie={handleSearchMovie} />
-      <main className="main">
-        <ListBox>
-          <Movies movies={movies} onClickMovie={handleClickMovie} />
-        </ListBox>
-        <ListBox>
-          {clickedMovie
-            ? (
-              <MovieDetails
-                clickedMovie={clickedMovie}
-                onClickBtnBack={handleClickBtnBack}
-                onSubmitRating={handleSubmitRating}
-              />
-            )
-            : (
-              <>
-                <History watchedMovies={watchedMovies} />
-                {watchedMovies.length > 0 && (
-                  <WatchedMovies
-                    watchedMovies={watchedMovies}
-                    onClickBtnDelete={handleClickBtnDelete}
-                  />
-                )}
-              </>
-            )
-          }
-        </ListBox>
-      </main>
+      <Main movies={movies} />
     </>
   )
 }
