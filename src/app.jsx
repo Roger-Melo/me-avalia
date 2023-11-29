@@ -124,12 +124,8 @@ const App = () => {
   useEffect(() => {
     fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=jurassic+park`)
       .then(r => r.json())
-      .then(data => setMovies(data.Search.map(movie => ({
-        id: movie.imdbID,
-        title: movie.Title,
-        year: movie.Year,
-        poster: movie.Poster
-      }))))
+      .then(data => setMovies(data.Search.map(movie =>
+        ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
       .catch(console.log)
   }, [])
 
@@ -177,12 +173,8 @@ const App = () => {
 
     fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${searchMovie.value}`)
       .then(r => r.json())
-      .then(data => setMovies(data.Search.map(movie => ({
-        id: movie.imdbID,
-        title: movie.Title,
-        year: movie.Year,
-        poster: movie.Poster
-      }))))
+      .then(data => setMovies(data.Search.map(movie =>
+        ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
       .catch(console.log)
   }
 
