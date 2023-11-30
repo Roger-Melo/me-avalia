@@ -149,7 +149,7 @@ const useClickedMovie = setWatchedMovies => {
         released: movie.Released,
         genre: movie.Genre
       }))
-      .catch(console.log)
+      .catch(error => alert(error.message))
   }
 
   const handleSubmitRating = e => {
@@ -210,7 +210,7 @@ const App = () => {
       .then(r => r.json())
       .then(data => setMovies(data.Search.map(movie =>
         ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
-      .catch(console.log)
+      .catch(error => alert(error.message))
   }, [])
 
   const handleSearchMovie = e => {
@@ -225,7 +225,7 @@ const App = () => {
       .then(r => r.json())
       .then(data => setMovies(data.Search.map(movie =>
         ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
-      .catch(console.log)
+      .catch(error => alert(error.message))
   }
 
   return (
