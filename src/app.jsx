@@ -6,6 +6,7 @@ const getTotalMinutes = watchedMovies => watchedMovies
 const getMoviePoster = src => src === 'N/A' ? '404-img.jpg' : src
 
 const apiKey = import.meta.env.VITE_API_KEY
+const baseUrl = `https://www.omdbapi.com/?apikey=${apiKey}`
 
 const NavBar = ({ movies, onSearchMovie }) => (
   <nav className="nav-bar">
@@ -133,7 +134,7 @@ const useClickedMovie = setWatchedMovies => {
       return
     }
 
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${currentClickedMovie.id}`)
+    fetch(`${baseUrl}&i=${currentClickedMovie.id}`)
       .then(r => r.json())
       .then(movie => setClickedMovie({
         id: movie.imdbID,
@@ -205,7 +206,7 @@ const App = () => {
   const [movies, setMovies] = useState([])
 
   useEffect(() => {
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=jurassic+park`)
+    fetch(`${baseUrl}&s=jurassic+park`)
       .then(r => r.json())
       .then(data => setMovies(data.Search.map(movie =>
         ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
@@ -220,7 +221,7 @@ const App = () => {
       return
     }
 
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${searchMovie.value}`)
+    fetch(`${baseUrl}&s=${searchMovie.value}`)
       .then(r => r.json())
       .then(data => setMovies(data.Search.map(movie =>
         ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))))
