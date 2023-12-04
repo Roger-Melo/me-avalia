@@ -1,3 +1,4 @@
+import localforage from 'localforage'
 import { useEffect, useState, useRef } from 'react'
 
 const getTotalMinutes = watchedMovies => watchedMovies
@@ -129,6 +130,22 @@ const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => (
 
 const useWatchedMovies = () => {
   const [watchedMovies, setWatchedMovies] = useState([])
+
+  useEffect(() => {
+    localforage.setItem('meAvalia', watchedMovies)
+      .catch(error => alert(error.message))
+  }, [watchedMovies])
+
+  useEffect(() => {
+    localforage.getItem('meAvalia')
+      .then(value => {
+        if (value) {
+          setWatchedMovies(value)
+        }
+      })
+      .catch(error => alert(error.message))
+  }, [])
+
   const handleClickBtnDelete = id => setWatchedMovies(prev => prev.filter(p => p.id !== id))
   return { watchedMovies, setWatchedMovies, handleClickBtnDelete }
 }
