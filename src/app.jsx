@@ -155,7 +155,13 @@ const useClickedMovie = setWatchedMovies => {
   const handleSubmitRating = e => {
     e.preventDefault()
     const { rating } = e.target.elements
-    setWatchedMovies(prev => [...prev, { ...clickedMovie, userRating: rating.value }])
+    setWatchedMovies(prev => {
+      const duplicatedMovie = prev.some(movie => movie.id === clickedMovie.id)
+      return duplicatedMovie
+        ? prev
+          .map(m => m.id === clickedMovie.id ? { ...clickedMovie, userRating: rating.value } : m)
+        : [...prev, { ...clickedMovie, userRating: rating.value }]
+    })
     setClickedMovie(null)
   }
 
