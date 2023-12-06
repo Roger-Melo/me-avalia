@@ -1,9 +1,7 @@
 import localforage from 'localforage'
 import { useEffect, useState, useRef } from 'react'
 import { StarRating } from './components/star-rating'
-
-const getTotalMinutes = watchedMovies => watchedMovies
-  .reduce((acc, item) => acc + (item.runtime === 'N/A' ? 0 : +item.runtime.split(' ')[0]), 0)
+import { History } from './components/history'
 
 const getMoviePoster = src => src === 'N/A' ? '404-img.jpg' : src
 
@@ -38,22 +36,6 @@ const NavBar = ({ movies, onSearchMovie }) => {
 }
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
-
-const History = ({ watchedMovies }) => (
-  <div className="history">
-    <h2>Histórico</h2>
-    <div>
-      <p>
-        <span>#️⃣</span>{' '}
-        <span>{watchedMovies.length} Filmes</span>
-      </p>
-      <p>
-        <span>⏳</span>{' '}
-        <span>{getTotalMinutes(watchedMovies)} min</span>
-      </p>
-    </div>
-  </div>
-)
 
 const Movies = ({ movies, onClickMovie }) => (
   <ul className="list list-movies">
