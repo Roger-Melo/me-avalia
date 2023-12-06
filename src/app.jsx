@@ -1,5 +1,6 @@
 import localforage from 'localforage'
 import { useEffect, useState, useRef } from 'react'
+import { StarRating } from './components/star-rating'
 
 const getTotalMinutes = watchedMovies => watchedMovies
   .reduce((acc, item) => acc + (item.runtime === 'N/A' ? 0 : +item.runtime.split(' ')[0]), 0)
@@ -97,36 +98,37 @@ const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
   </ul>
 )
 
-const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => (
-  <div className="details">
-    <header>
-      <button className="btn-back" onClick={onClickBtnBack}>&larr;</button>
-      <img src={getMoviePoster(clickedMovie.poster)} alt={`Poster de ${clickedMovie.title}`} />
-      <div className="details-overview">
-        <h2>{clickedMovie.title}</h2>
-        <p>{clickedMovie.released} &bull; {clickedMovie.runtime}</p>
-        <p>{clickedMovie.genre}</p>
-        <p><span>⭐️</span>{clickedMovie.imdbRating} IMDb rating</p>
-      </div>
-    </header>
-    <section>
-      <div className="rating">
-        <form onSubmit={onSubmitRating} className="form-rating">
-          <p>Qual nota você dá para este filme?</p>
-          <div>
-            <select name="rating" defaultValue={1}>
-              {Array.from({ length: 10 }, (_, i) => <option key={i} value={i + 1}>{i + 1}</option>)}
-            </select>
-            <button className="btn-add">+ Adicionar à lista</button>
-          </div>
-        </form>
-      </div>
-      <p><em>{clickedMovie.plot}</em></p>
-      <p>Elenco: {clickedMovie.actors}</p>
-      <p>Direção: {clickedMovie.director}</p>
-    </section>
-  </div>
-)
+const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => {
+  const [rating, setRating] = useState(0)
+
+  const handleRating = userRating => setRating(userRating)
+
+  return (
+    <div className="details">
+      <header>
+        <button className="btn-back" onClick={onClickBtnBack}>&larr;</button>
+        <img src={getMoviePoster(clickedMovie.poster)} alt={`Poster de ${clickedMovie.title}`} />
+        <div className="details-overview">
+          <h2>{clickedMovie.title}</h2>
+          <p>{clickedMovie.released} &bull; {clickedMovie.runtime}</p>
+          <p>{clickedMovie.genre}</p>
+          <p><span>⭐️</span>{clickedMovie.imdbRating} IMDb rating</p>
+        </div>
+      </header>
+      <section>
+        <div className="rating">
+          <StarRating maxRating={10} size={26} color="#FCC419" onRating={handleRating} />
+          <button className="btn-add" onClick={() => onSubmitRating(rating)}>
+            + Adicionar à lista
+          </button>
+        </div>
+        <p><em>{clickedMovie.plot}</em></p>
+        <p>Elenco: {clickedMovie.actors}</p>
+        <p>Direção: {clickedMovie.director}</p>
+      </section>
+    </div>
+  )
+}
 
 const useWatchedMovies = () => {
   const [watchedMovies, setWatchedMovies] = useState([])
@@ -179,15 +181,12 @@ const useClickedMovie = setWatchedMovies => {
       .catch(error => alert(error.message))
   }
 
-  const handleSubmitRating = e => {
-    e.preventDefault()
-    const { rating } = e.target.elements
+  const handleSubmitRating = userRating => {
     setWatchedMovies(prev => {
       const duplicatedMovie = prev.some(movie => movie.id === clickedMovie.id)
       return duplicatedMovie
-        ? prev
-          .map(m => m.id === clickedMovie.id ? { ...clickedMovie, userRating: rating.value } : m)
-        : [...prev, { ...clickedMovie, userRating: rating.value }]
+        ? prev.map(m => m.id === clickedMovie.id ? { ...clickedMovie, userRating } : m)
+        : [...prev, { ...clickedMovie, userRating }]
     })
     setClickedMovie(null)
   }
