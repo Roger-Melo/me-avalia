@@ -1,8 +1,8 @@
-import localforage from 'localforage'
 import { useEffect, useState } from 'react'
 import { StarRating } from './components/star-rating'
 import { History } from './components/history'
 import { NavBar } from './components/nav-bar'
+import { useWatchedMovies } from './hooks/use-watched-movies'
 
 const getMoviePoster = src => src === 'N/A' ? '404-img.jpg' : src
 
@@ -84,28 +84,6 @@ const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => {
       </section>
     </div>
   )
-}
-
-const useWatchedMovies = () => {
-  const [watchedMovies, setWatchedMovies] = useState([])
-
-  useEffect(() => {
-    localforage.setItem('meAvalia', watchedMovies)
-      .catch(error => alert(error.message))
-  }, [watchedMovies])
-
-  useEffect(() => {
-    localforage.getItem('meAvalia')
-      .then(value => {
-        if (value) {
-          setWatchedMovies(value)
-        }
-      })
-      .catch(error => alert(error.message))
-  }, [])
-
-  const handleClickBtnDelete = id => setWatchedMovies(prev => prev.filter(p => p.id !== id))
-  return { watchedMovies, setWatchedMovies, handleClickBtnDelete }
 }
 
 const useClickedMovie = setWatchedMovies => {
