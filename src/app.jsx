@@ -1,39 +1,13 @@
 import localforage from 'localforage'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { StarRating } from './components/star-rating'
 import { History } from './components/history'
+import { NavBar } from './components/nav-bar'
 
 const getMoviePoster = src => src === 'N/A' ? '404-img.jpg' : src
 
 const apiKey = import.meta.env.VITE_API_KEY
 const baseUrl = `https://www.omdbapi.com/?apikey=${apiKey}`
-
-const NavBar = ({ movies, onSearchMovie }) => {
-  const formRef = useRef(null)
-
-  useEffect(() => {
-    if (formRef.current.elements.searchMovie.value.length > 0) {
-      formRef.current.reset()
-    }
-  }, [movies])
-
-  return (
-    <nav className="nav-bar">
-      <img className="logo" src="logo-me-avalia.png" alt="Me avalia" />
-      <form ref={formRef} onSubmit={onSearchMovie} className="form-search">
-        <input
-          name="searchMovie"
-          className="search"
-          type="text"
-          placeholder="Buscar filmes..."
-          autoFocus
-        />
-        <button className="btn-search">Buscar</button>
-      </form>
-      <p className="num-results"><strong>{movies.length}</strong> Resultados</p>
-    </nav>
-  )
-}
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
 
