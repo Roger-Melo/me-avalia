@@ -3,6 +3,7 @@ import { StarRating } from './components/star-rating'
 import { History } from './components/history'
 import { NavBar } from './components/nav-bar'
 import { Movies } from './components/movies'
+import { WatchedMovies } from './components/watched-movies'
 import { useWatchedMovies } from './hooks/use-watched-movies'
 import { getMoviePoster } from './utils/get-movie-poster'
 
@@ -10,32 +11,6 @@ const apiKey = import.meta.env.VITE_API_KEY
 const baseUrl = `https://www.omdbapi.com/?apikey=${apiKey}`
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
-
-const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
-  <ul className="list">
-    {watchedMovies.map(m => (
-      <li key={m.id}>
-        <img src={getMoviePoster(m.poster)} alt={`Poster de ${m.title}`} />
-        <h3>{m.title}</h3>
-        <div>
-          <p>
-            <span>⭐️</span>
-            <span>{m.imdbRating}</span>
-          </p>
-          <p>
-            <span>🌟</span>
-            <span>{m.userRating}</span>
-          </p>
-          <p>
-            <span>⏳</span>
-            <span>{m.runtime}</span>
-          </p>
-          <button onClick={() => onClickBtnDelete(m.id)} className="btn-delete">X</button>
-        </div>
-      </li>
-    ))}
-  </ul>
-)
 
 const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => {
   const [rating, setRating] = useState(0)
