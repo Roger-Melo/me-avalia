@@ -2,31 +2,14 @@ import { useEffect, useState } from 'react'
 import { StarRating } from './components/star-rating'
 import { History } from './components/history'
 import { NavBar } from './components/nav-bar'
+import { Movies } from './components/movies'
 import { useWatchedMovies } from './hooks/use-watched-movies'
-
-const getMoviePoster = src => src === 'N/A' ? '404-img.jpg' : src
+import { getMoviePoster } from './utils/get-movie-poster'
 
 const apiKey = import.meta.env.VITE_API_KEY
 const baseUrl = `https://www.omdbapi.com/?apikey=${apiKey}`
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
-
-const Movies = ({ movies, onClickMovie }) => (
-  <ul className="list list-movies">
-    {movies.map(movie => (
-      <li key={movie.id} onClick={() => onClickMovie(movie)}>
-        <img src={getMoviePoster(movie.poster)} alt={`Poster de ${movie.title}`} />
-        <h3>{movie.title}</h3>
-        <div>
-          <p>
-            <span>📅</span>
-            <span>{movie.year}</span>
-          </p>
-        </div>
-      </li>
-    ))}
-  </ul>
-)
 
 const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
   <ul className="list">
