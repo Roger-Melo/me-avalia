@@ -5,53 +5,10 @@ import { Movies } from './components/movies'
 import { WatchedMovies } from './components/watched-movies'
 import { MovieDetails } from './components/movie-details'
 import { useWatchedMovies } from './hooks/use-watched-movies'
-
-const apiKey = import.meta.env.VITE_API_KEY
-const baseUrl = `https://www.omdbapi.com/?apikey=${apiKey}`
+import { useClickedMovie } from './hooks/use-clicked-movie'
+import { baseUrl } from './utils/base-url'
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
-
-const useClickedMovie = setWatchedMovies => {
-  const [clickedMovie, setClickedMovie] = useState(null)
-
-  const handleClickBtnBack = () => setClickedMovie(null)
-  const handleClickMovie = currentClickedMovie => {
-    const prevClickedMovie = clickedMovie
-    if (prevClickedMovie?.id === currentClickedMovie.id) {
-      setClickedMovie(null)
-      return
-    }
-
-    fetch(`${baseUrl}&i=${currentClickedMovie.id}`)
-      .then(r => r.json())
-      .then(movie => setClickedMovie({
-        id: movie.imdbID,
-        title: movie.Title,
-        year: movie.Year,
-        imdbRating: movie.imdbRating,
-        runtime: movie.Runtime,
-        poster: movie.Poster,
-        plot: movie.Plot,
-        actors: movie.Actors,
-        director: movie.Director,
-        released: movie.Released,
-        genre: movie.Genre
-      }))
-      .catch(error => alert(error.message))
-  }
-
-  const handleSubmitRating = userRating => {
-    setWatchedMovies(prev => {
-      const duplicatedMovie = prev.some(movie => movie.id === clickedMovie.id)
-      return duplicatedMovie
-        ? prev.map(m => m.id === clickedMovie.id ? { ...clickedMovie, userRating } : m)
-        : [...prev, { ...clickedMovie, userRating }]
-    })
-    setClickedMovie(null)
-  }
-
-  return { clickedMovie, handleClickBtnBack, handleClickMovie, handleSubmitRating }
-}
 
 const Main = ({ movies }) => {
   const { watchedMovies, setWatchedMovies, handleClickBtnDelete } = useWatchedMovies()
