@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { baseUrl } from '../utils/base-url'
+import { baseUrl } from '@/utils/base-url'
 
 const useClickedMovie = setWatchedMovies => {
   const [clickedMovie, setClickedMovie] = useState(null)

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { StarRating } from './star-rating'
-import { getMoviePoster } from '../utils/get-movie-poster'
+import { StarRating } from '@/components/star-rating'
+import { getMoviePoster } from '@/utils/get-movie-poster'
 
 const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => {
   const [rating, setRating] = useState(0)

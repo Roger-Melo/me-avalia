@@ -1,9 +1,9 @@
-import { History } from './history'
-import { Movies } from './movies'
-import { WatchedMovies } from './watched-movies'
-import { MovieDetails } from './movie-details'
-import { useWatchedMovies } from '../hooks/use-watched-movies'
-import { useClickedMovie } from '../hooks/use-clicked-movie'
+import { History } from '@/components/history'
+import { Movies } from '@/components/movies'
+import { WatchedMovies } from '@/components/watched-movies'
+import { MovieDetails } from '@/components/movie-details'
+import { useWatchedMovies } from '@/hooks/use-watched-movies'
+import { useClickedMovie } from '@/hooks/use-clicked-movie'
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
 

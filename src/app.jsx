@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { NavBar } from './components/nav-bar'
-import { Main } from './components/main'
-import { baseUrl } from './utils/base-url'
+import { NavBar } from '@/components/nav-bar'
+import { Main } from '@/components/main'
+import { baseUrl } from '@/utils/base-url'
 
 const App = () => {
   const [movies, setMovies] = useState([])

@@ -1,4 +1,4 @@
-import { getMoviePoster } from '../utils/get-movie-poster'
+import { getMoviePoster } from '@/utils/get-movie-poster'
 
 const WatchedMovies = ({ watchedMovies, onClickBtnDelete }) => (
   <ul className="list">
