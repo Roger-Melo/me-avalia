@@ -1,5 +1,6 @@
 import { History } from '@/components/history'
 import { Movies } from '@/components/movies'
+import { Loader } from '@/components/loader'
 import { WatchedMovies } from '@/components/watched-movies'
 import { MovieDetails } from '@/components/movie-details'
 import { useWatchedMovies } from '@/hooks/use-watched-movies'
@@ -7,7 +8,7 @@ import { useClickedMovie } from '@/hooks/use-clicked-movie'
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
 
-const Main = ({ movies }) => {
+const Main = ({ movies, isFetchingMovies }) => {
   const { watchedMovies, setWatchedMovies, handleClickBtnDelete } = useWatchedMovies()
   const {
     clickedMovie,
@@ -19,7 +20,7 @@ const Main = ({ movies }) => {
   return (
     <main className="main">
       <ListBox>
-        <Movies movies={movies} onClickMovie={handleClickMovie} />
+        {isFetchingMovies ? <Loader /> : <Movies movies={movies} onClickMovie={handleClickMovie} />}
       </ListBox>
       <ListBox>
         {clickedMovie
