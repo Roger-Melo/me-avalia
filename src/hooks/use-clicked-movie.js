@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { baseUrl } from '@/utils/base-url'
+import { request } from '@/utils/request'
 
 const useClickedMovie = setWatchedMovies => {
   const [clickedMovie, setClickedMovie] = useState(null)
@@ -14,9 +15,9 @@ const useClickedMovie = setWatchedMovies => {
     }
 
     setIsFetchingMovieDetails(true)
-    fetch(`${baseUrl}&i=${currentClickedMovie.id}`)
-      .then(r => r.json())
-      .then(movie => setClickedMovie({
+    request({
+      url: `${baseUrl}&i=${currentClickedMovie.id}`,
+      onSuccess: movie => setClickedMovie({
         id: movie.imdbID,
         title: movie.Title,
         year: movie.Year,
@@ -28,9 +29,9 @@ const useClickedMovie = setWatchedMovies => {
         director: movie.Director,
         released: movie.Released,
         genre: movie.Genre
-      }))
-      .catch(error => alert(error.message))
-      .finally(() => setIsFetchingMovieDetails(false))
+      }),
+      onFinally: () => setIsFetchingMovieDetails(false)
+    })
   }
 
   const handleSubmitRating = userRating => {
