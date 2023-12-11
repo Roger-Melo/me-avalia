@@ -3,6 +3,7 @@ import { baseUrl } from '@/utils/base-url'
 
 const useClickedMovie = setWatchedMovies => {
   const [clickedMovie, setClickedMovie] = useState(null)
+  const [isFetchingMovieDetails, setIsFetchingMovieDetails] = useState(false)
 
   const handleClickBtnBack = () => setClickedMovie(null)
   const handleClickMovie = currentClickedMovie => {
@@ -12,6 +13,7 @@ const useClickedMovie = setWatchedMovies => {
       return
     }
 
+    setIsFetchingMovieDetails(true)
     fetch(`${baseUrl}&i=${currentClickedMovie.id}`)
       .then(r => r.json())
       .then(movie => setClickedMovie({
@@ -28,6 +30,7 @@ const useClickedMovie = setWatchedMovies => {
         genre: movie.Genre
       }))
       .catch(error => alert(error.message))
+      .finally(() => setIsFetchingMovieDetails(false))
   }
 
   const handleSubmitRating = userRating => {
@@ -40,7 +43,7 @@ const useClickedMovie = setWatchedMovies => {
     setClickedMovie(null)
   }
 
-  return { clickedMovie, handleClickBtnBack, handleClickMovie, handleSubmitRating }
+  return { clickedMovie, handleClickBtnBack, handleClickMovie, handleSubmitRating, isFetchingMovieDetails }
 }
 
 export { useClickedMovie }

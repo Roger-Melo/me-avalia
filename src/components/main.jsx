@@ -14,7 +14,8 @@ const Main = ({ movies, isFetchingMovies }) => {
     clickedMovie,
     handleClickBtnBack,
     handleClickMovie,
-    handleSubmitRating
+    handleSubmitRating,
+    isFetchingMovieDetails
   } = useClickedMovie(setWatchedMovies)
 
   return (
@@ -23,25 +24,26 @@ const Main = ({ movies, isFetchingMovies }) => {
         {isFetchingMovies ? <Loader /> : <Movies movies={movies} onClickMovie={handleClickMovie} />}
       </ListBox>
       <ListBox>
-        {clickedMovie
-          ? (
-            <MovieDetails
-              clickedMovie={clickedMovie}
-              onClickBtnBack={handleClickBtnBack}
-              onSubmitRating={handleSubmitRating}
-            />
-          )
-          : (
-            <>
-              <History watchedMovies={watchedMovies} />
-              {watchedMovies.length > 0 && (
-                <WatchedMovies
-                  watchedMovies={watchedMovies}
-                  onClickBtnDelete={handleClickBtnDelete}
-                />
-              )}
-            </>
-          )
+        {isFetchingMovieDetails ? <Loader /> :
+          clickedMovie
+            ? (
+              <MovieDetails
+                clickedMovie={clickedMovie}
+                onClickBtnBack={handleClickBtnBack}
+                onSubmitRating={handleSubmitRating}
+              />
+            )
+            : (
+              <>
+                <History watchedMovies={watchedMovies} />
+                {watchedMovies.length > 0 && (
+                  <WatchedMovies
+                    watchedMovies={watchedMovies}
+                    onClickBtnDelete={handleClickBtnDelete}
+                  />
+                )}
+              </>
+            )
         }
       </ListBox>
     </main>
