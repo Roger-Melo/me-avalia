@@ -1,20 +1,24 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import { NavBar } from '@/components/nav-bar'
 import { Main } from '@/components/main'
 import { baseUrl } from '@/utils/base-url'
 import { request } from '@/utils/request'
 
+const reducer = (state, action) => ({
+  set_movies: { ...state, movies: action.movies?.map(movie => ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster })) },
+  init_fetch: { ...state, isFetchingMovies: true },
+  ended_fetch: { ...state, isFetchingMovies: false }
+})[action.type] || state
+
 const App = () => {
-  const [movies, setMovies] = useState([])
-  const [isFetchingMovies, setIsFetchingMovies] = useState(false)
+  const [state, dispatch] = useReducer(reducer, { movies: [], isFetchingMovies: false })
 
   useEffect(() => {
-    setIsFetchingMovies(true)
+    dispatch({ type: 'init_fetch' })
     request({
       url: `${baseUrl}&s=jurassic+park`,
-      onSuccess: data => setMovies(data.Search.map(movie =>
-        ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))),
-      onFinally: () => setIsFetchingMovies(false)
+      onSuccess: data => dispatch({ type: 'set_movies', movies: data.Search }),
+      onFinally: () => dispatch({ type: 'ended_fetch' })
     })
   }, [])
 
@@ -26,19 +30,18 @@ const App = () => {
       return
     }
 
-    setIsFetchingMovies(true)
+    dispatch({ type: 'init_fetch' })
     request({
       url: `${baseUrl}&s=${searchMovie.value}`,
-      onSuccess: data => setMovies(data.Search.map(movie =>
-        ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster }))),
-      onFinally: () => setIsFetchingMovies(false)
+      onSuccess: data => dispatch({ type: 'set_movies', movies: data.Search }),
+      onFinally: () => dispatch({ type: 'ended_fetch' })
     })
   }
 
   return (
     <>
-      <NavBar movies={movies} onSearchMovie={handleSearchMovie} />
-      <Main movies={movies} isFetchingMovies={isFetchingMovies} />
+      <NavBar movies={state.movies} onSearchMovie={handleSearchMovie} />
+      <Main movies={state.movies} isFetchingMovies={state.isFetchingMovies} />
     </>
   )
 }
