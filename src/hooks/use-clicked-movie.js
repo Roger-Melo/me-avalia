@@ -1,4 +1,5 @@
 import { useReducer } from 'react'
+import { useLoader } from '@/hooks/use-loader'
 import { baseUrl } from '@/utils/base-url'
 import { request } from '@/utils/request'
 
@@ -18,13 +19,12 @@ const getMovie = movie => ({
 
 const reducer = (state, action) => ({
   dismissed_movie_details: { ...state, clickedMovie: null },
-  set_clicked_movie: { ...state, clickedMovie: action.movie && getMovie(action.movie) },
-  init_fetch: { ...state, isFetchingMovieDetails: true },
-  ended_fetch: { ...state, isFetchingMovieDetails: false }
+  set_clicked_movie: { ...state, clickedMovie: action.movie && getMovie(action.movie) }
 })[action.type] || state
 
 const useClickedMovie = setWatchedMovies => {
-  const [state, dispatch] = useReducer(reducer, { clickedMovie: null, isFetchingMovieDetails: false })
+  const [state, dispatch] = useReducer(reducer, { clickedMovie: null })
+  const [isFetchingMovieDetails, setIsFetchingMovieDetails] = useLoader()
 
   const handleClickBtnBack = () => dispatch({ type: 'dismissed_movie_details' })
   const handleClickMovie = currentClickedMovie => {
@@ -34,11 +34,11 @@ const useClickedMovie = setWatchedMovies => {
       return
     }
 
-    dispatch({ type: 'init_fetch' })
+    setIsFetchingMovieDetails(true)
     request({
       url: `${baseUrl}&i=${currentClickedMovie.id}`,
       onSuccess: movie => dispatch({ type: 'set_clicked_movie', movie }),
-      onFinally: () => dispatch({ type: 'ended_fetch' })
+      onFinally: () => setIsFetchingMovieDetails(false)
     })
   }
 
@@ -52,7 +52,7 @@ const useClickedMovie = setWatchedMovies => {
     dispatch({ type: 'dismissed_movie_details' })
   }
 
-  return { clickedMovie: state.clickedMovie, handleClickBtnBack, handleClickMovie, handleSubmitRating, isFetchingMovieDetails: state.isFetchingMovieDetails }
+  return { clickedMovie: state.clickedMovie, handleClickBtnBack, handleClickMovie, handleSubmitRating, isFetchingMovieDetails }
 }
 
 export { useClickedMovie }
