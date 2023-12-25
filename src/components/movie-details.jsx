@@ -22,7 +22,7 @@ const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => {
       <section>
         <div className="rating">
           <StarRating maxRating={10} size={26} color="#FCC419" onRating={handleRating} />
-          <button className="btn-add" onClick={() => onSubmitRating(rating)}>
+          <button className="btn-add" onClick={() => onSubmitRating(rating)} data-cy="button-add-list">
             + Adicionar à lista
           </button>
         </div>
