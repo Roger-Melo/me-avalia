@@ -30,8 +30,8 @@ const Star = ({ onRate, filled, onMouseIn, onMouseOut, color, size, index }) => 
   )
 }
 
-const StarRating = ({ maxRating = 5, color = 'gray', size = 48, className = '', onRating }) => {
-  const [rating, setRating] = useState(0)
+const StarRating = ({ maxRating = 5, color = 'gray', size = 48, className = '', initialRating = 0, onRating }) => {
+  const [rating, setRating] = useState(initialRating)
   const [tempRating, setTempRating] = useState(0)
 
   const handleMouseOut = () => setTempRating(0)
