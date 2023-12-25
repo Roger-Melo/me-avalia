@@ -40,6 +40,7 @@ const Main = ({ movies, isFetchingMovies }) => {
                   <WatchedMovies
                     watchedMovies={watchedMovies}
                     onClickBtnDelete={handleClickBtnDelete}
+                    onClickMovie={handleClickMovie}
                   />
                 )}
               </>
