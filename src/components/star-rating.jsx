@@ -3,11 +3,12 @@ import { useState } from 'react'
 const containerStyle = { display: 'flex', gap: '1rem', alignItems: 'center' }
 const starContainerStyle = { display: 'flex', margin: 0, padding: 0, listStyle: 'none' }
 
-const Star = ({ onRate, filled, onMouseIn, onMouseOut, color, size }) => {
+const Star = ({ onRate, filled, onMouseIn, onMouseOut, color, size, index }) => {
   const starStyle = { width: `${size}px`, height: `${size}px`, display: 'block', cursor: 'pointer' }
 
   return (
     <li
+      data-cy={`star-${index}`}
       style={starStyle}
       onClick={onRate}
       onMouseEnter={onMouseIn}
@@ -49,6 +50,7 @@ const StarRating = ({ maxRating = 5, color = 'gray', size = 48, className = '', 
       <ul style={starContainerStyle}>
         {Array.from({ length: maxRating }, (_, i) =>
           <Star
+            index={i}
             size={size}
             color={color}
             onRate={() => handleRating(i)}
