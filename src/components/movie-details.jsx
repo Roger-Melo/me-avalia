@@ -3,9 +3,8 @@ import { StarRating } from '@/components/star-rating'
 import { getMoviePoster } from '@/utils/get-movie-poster'
 
 const MovieDetails = ({ clickedMovie, watchedMovies, onClickBtnBack, onSubmitRating }) => {
-  const [rating, setRating] = useState(() => {
-    return watchedMovies.find(m => m.id === clickedMovie.id)?.userRating ?? 0
-  })
+  const userRating = watchedMovies.find(m => m.id === clickedMovie.id)?.userRating
+  const [rating, setRating] = useState(userRating ?? 0)
 
   const handleRating = userRating => setRating(userRating)
 
@@ -25,7 +24,7 @@ const MovieDetails = ({ clickedMovie, watchedMovies, onClickBtnBack, onSubmitRat
         <div className="rating">
           <StarRating maxRating={10} initialRating={rating} size={26} color="#FCC419" onRating={handleRating} />
           <button className="btn-add" onClick={() => onSubmitRating(rating)} data-cy="button-add-list">
-            {watchedMovies.find(m => m.id === clickedMovie.id)?.userRating ? 'Alterar nota' : '+ Adicionar à lista'}
+            {userRating ? 'Alterar nota' : '+ Adicionar à lista'}
           </button>
         </div>
         <p><em>{clickedMovie.plot}</em></p>
