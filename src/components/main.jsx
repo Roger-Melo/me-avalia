@@ -3,20 +3,20 @@ import { Movies } from '@/components/movies'
 import { Loader } from '@/components/loader'
 import { WatchedMovies } from '@/components/watched-movies'
 import { MovieDetails } from '@/components/movie-details'
-import { useWatchedMovies } from '@/hooks/use-watched-movies'
-import { useClickedMovie } from '@/hooks/use-clicked-movie'
+import { useMovies } from '@/hooks/use-movies'
 
 const ListBox = ({ children }) => <div className="box">{children}</div>
 
 const Main = ({ movies, isFetchingMovies }) => {
-  const { watchedMovies, setWatchedMovies, handleClickBtnDelete } = useWatchedMovies()
   const {
     clickedMovie,
     handleClickBtnBack,
     handleClickMovie,
     handleSubmitRating,
-    isFetchingMovieDetails
-  } = useClickedMovie(setWatchedMovies)
+    isFetchingMovieDetails,
+    watchedMovies,
+    handleClickBtnDelete
+  } = useMovies()
 
   return (
     <main className="main">
