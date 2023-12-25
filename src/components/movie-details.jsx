@@ -8,7 +8,7 @@ const MovieDetails = ({ clickedMovie, onClickBtnBack, onSubmitRating }) => {
   const handleRating = userRating => setRating(userRating)
 
   return (
-    <div className="details">
+    <div className="details" data-cy="movie-details-container">
       <header>
         <button className="btn-back" onClick={onClickBtnBack}>&larr;</button>
         <img src={getMoviePoster(clickedMovie.poster)} alt={`Poster de ${clickedMovie.title}`} />
