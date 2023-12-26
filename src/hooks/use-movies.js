@@ -20,7 +20,8 @@ const getMovie = movie => ({
 
 const reducer = (state, action) => ({
   dismissed_movie_details: { ...state, clickedMovie: null },
-  set_clicked_movie: { ...state, clickedMovie: action.movie && getMovie(action.movie) }
+  set_clicked_movie: { ...state, clickedMovie: action.movie && getMovie(action.movie) },
+  set_cached_movie: { ...state, clickedMovie: action.cachedMovie }
 })[action.type] || state
 
 const useMovies = () => {
@@ -49,6 +50,12 @@ const useMovies = () => {
     const prevClickedMovie = state.clickedMovie
     if (prevClickedMovie?.id === currentClickedMovie.id) {
       dispatch({ type: 'dismissed_movie_details' })
+      return
+    }
+
+    const cachedMovie = watchedMovies.find(movie => movie.id === currentClickedMovie.id)
+    if (cachedMovie) {
+      dispatch({ type: 'set_cached_movie', cachedMovie })
       return
     }
 
