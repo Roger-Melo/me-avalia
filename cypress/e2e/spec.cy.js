@@ -1,36 +1,57 @@
-/*
-A solid test generally covers 3 phases:
+beforeEach(() => {
+  cy.visit('/')
 
-1. Set up the application state.
-2. Take an action.
-3. Make an assertion about the resulting application state.
-
-You might also see this phrased as "Given, When, Then", or "Arrange, Act, Assert". But the idea is: 
-First you put the application into a specific state, then you take some action in the application 
-that causes it to change, and finally you check the resulting application state.
-
-Today, we'll take a narrow view of these steps and map them cleanly to Cypress commands:
-
-Visit a web page.
-Query for an element.
-Interact with that element.
-Assert about the content on the page.
-*/
-
-describe('Rate and add movies to the list of watched movies', () => {
-  it('Rate and add "Jurassic Park" to the list', () => {
-    cy.visit('/')
-    cy.get('[data-cy="list-movies"]').contains('Jurassic Park').click()
+  const addWatchedMovies = movies => movies.forEach(movie => {
+    cy.get('[data-cy="list-movies"]').contains(movie).click()
     cy.get('[data-cy="star-0"]').click()
     cy.get('[data-cy="button-add-list"]').click()
-    cy.get('[data-cy="list-watched-movies"]').contains('Jurassic Park')
+    cy.get('[data-cy="list-watched-movies"]').contains(movie)
   })
 
-  it('Rate and add "Jurassic Park III" to the list', () => {
-    cy.visit('/')
-    cy.get('[data-cy="list-movies"]').contains('Jurassic Park III').click()
-    cy.get('[data-cy="star-1"]').click()
+  addWatchedMovies(['Jurassic Park III', 'Jurassic Park: The Game'])
+})
+
+describe('Show details of a watched movie on click watched movies list', () => {
+  const showDetailsOf = movie => {
+    cy.get('[data-cy="list-watched-movies"]').contains(movie).click()
+    cy.get('[data-cy="movie-details-container"]').contains(movie)
+  }
+
+  it('Show details of Jurassic Park III', () => showDetailsOf('Jurassic Park III'))
+  it('Show details of Jurassic Park: The Game', () => showDetailsOf('Jurassic Park: The Game'))
+})
+
+describe('Remove movie from watched movies list', () => {
+  const remove = movie => {
+    cy.get('[data-cy="list-watched-movies"]')
+      .contains('li', movie)
+      .contains('button', 'X')
+      .click()
+    cy.get('[data-cy="list-watched-movies"]')
+      .should('have.length', 1)
+  }
+
+  it('Remove Jurassic Park III', () => remove('Jurassic Park III'))
+  it('Remove Jurassic Park: The Game', () => remove('Jurassic Park: The Game'))
+})
+
+describe('Stars', () => {
+  const clickJurassicParkIII = () => cy.get('[data-cy="list-watched-movies"]')
+    .contains('li', 'Jurassic Park III').click()
+
+  it('show rating if it\'s was already given', () => {
+    clickJurassicParkIII()
+    cy.get('[data-cy="star-2"]').click()
     cy.get('[data-cy="button-add-list"]').click()
-    cy.get('[data-cy="list-watched-movies"]').contains('Jurassic Park III')
+
+    clickJurassicParkIII()
+    cy.get('.rating > div > p').contains('3')
+  })
+
+  it('show empty stars if same rate was already given', () => {
+    clickJurassicParkIII()
+    cy.get('[data-cy="star-2"]').click()
+    cy.get('[data-cy="star-2"]').click()
+    cy.get('.rating > div > p').should('be.empty')
   })
 })
