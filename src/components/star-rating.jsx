@@ -61,7 +61,7 @@ const StarRating = ({ maxRating = 5, color = 'gray', size = 48, className = '', 
             onMouseOut={handleMouseOut}
           />)}
       </ul>
-      <p style={textStyle}>{tempRating || rating || ''}</p>
+      <p style={textStyle}>{tempRating || rating}</p>
     </div>
   )
 }
