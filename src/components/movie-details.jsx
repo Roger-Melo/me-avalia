@@ -24,7 +24,7 @@ const MovieDetails = ({ clickedMovie, watchedMovies, onClickBtnBack, onSubmitRat
         <div className="rating">
           <StarRating maxRating={10} initialRating={rating} size={26} color="#FCC419" onRating={handleRating} />
           <button className="btn-add" onClick={() => onSubmitRating(rating)} data-cy="button-add-list">
-            {userRating ? 'Alterar nota' : '+ Adicionar à lista'}
+            {userRating >= 0 ? 'Alterar nota' : '+ Adicionar à lista'}
           </button>
         </div>
         <p><em>{clickedMovie.plot}</em></p>
