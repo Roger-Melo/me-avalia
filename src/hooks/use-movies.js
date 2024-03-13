@@ -1,4 +1,4 @@
-import { useReducer, useState, useEffect } from 'react'
+import { useReducer, useState, useEffect, useCallback } from 'react'
 import localforage from 'localforage'
 import { useLoader } from '@/hooks/use-loader'
 import { baseUrl } from '@/utils/base-url'
@@ -44,9 +44,9 @@ const useMovies = () => {
       .catch(error => alert(error.message))
   }, [])
 
-  const handleClickBtnDelete = id => setWatchedMovies(prev => prev.filter(p => p.id !== id))
-  const handleClickBtnBack = () => dispatch({ type: 'dismissed_movie_details' })
-  const handleClickMovie = currentClickedMovie => {
+  const handleClickBtnDelete = useCallback(id => setWatchedMovies(prev => prev.filter(p => p.id !== id)), [])
+  const handleClickBtnBack = useCallback(() => dispatch({ type: 'dismissed_movie_details' }), [])
+  const handleClickMovie = useCallback(currentClickedMovie => {
     const prevClickedMovie = state.clickedMovie
     if (prevClickedMovie?.id === currentClickedMovie.id) {
       dispatch({ type: 'dismissed_movie_details' })
@@ -65,9 +65,9 @@ const useMovies = () => {
       onSuccess: movie => dispatch({ type: 'set_clicked_movie', movie }),
       onFinally: () => setIsFetchingMovieDetails(false)
     })
-  }
+  }, [setIsFetchingMovieDetails, state.clickedMovie, watchedMovies])
 
-  const handleSubmitRating = userRating => {
+  const handleSubmitRating = useCallback(userRating => {
     setWatchedMovies(prev => {
       const duplicatedMovie = prev.some(movie => movie.id === state.clickedMovie.id)
       return duplicatedMovie
@@ -75,9 +75,17 @@ const useMovies = () => {
         : [...prev, { ...state.clickedMovie, userRating }]
     })
     dispatch({ type: 'dismissed_movie_details' })
-  }
+  }, [state.clickedMovie])
 
-  return { clickedMovie: state.clickedMovie, handleClickBtnBack, handleClickMovie, handleSubmitRating, handleClickBtnDelete, isFetchingMovieDetails, watchedMovies }
+  return {
+    clickedMovie: state.clickedMovie,
+    isFetchingMovieDetails,
+    watchedMovies,
+    handleClickBtnDelete,
+    handleClickBtnBack,
+    handleClickMovie,
+    handleSubmitRating
+  }
 }
 
 export { useMovies }
