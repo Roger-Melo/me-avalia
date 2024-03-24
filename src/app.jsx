@@ -1,49 +1,41 @@
-import { useEffect, useReducer } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import { NavBar } from '@/components/nav-bar'
 import { Main } from '@/components/main'
-import { useLoader } from '@/hooks/use-loader'
 import { baseUrl } from '@/utils/base-url'
-import { request } from '@/utils/request'
 
-const reducer = (state, action) => ({
-  set_movies: { ...state, movies: action.movies?.map(movie => ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster })) }
-})[action.type] || state
+const fetchMovies = url => fetch(url)
+  .then(res => res.json())
+  .then(data => data.Search.map(movie =>
+    ({ id: movie.imdbID, title: movie.Title, year: movie.Year, poster: movie.Poster })))
 
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, { movies: [] })
-  const [isFetchingMovies, setIsFetchingMovies] = useLoader()
-
-  useEffect(() => {
-    setIsFetchingMovies(true)
-    request({
-      url: `${baseUrl}&s=jurassic+park`,
-      onSuccess: data => dispatch({ type: 'set_movies', movies: data.Search }),
-      onFinally: () => setIsFetchingMovies(false)
-    })
-  }, [setIsFetchingMovies])
+  const [url, setUrl] = useState(`${baseUrl}&s=jurassic+park`)
+  const { isError, isLoading, error, data } = useQuery({
+    queryKey: ['movies', url],
+    queryFn: () => fetchMovies(url),
+    refetchOnWindowFocus: false,
+    staleTime: Infinity
+  })
 
   const handleSearchMovie = e => {
     e.preventDefault()
     const { searchMovie } = e.target.elements
-
     if (searchMovie.value.length < 2) {
       return
     }
 
-    setIsFetchingMovies(true)
-    request({
-      url: `${baseUrl}&s=${searchMovie.value}`,
-      onSuccess: data => dispatch({ type: 'set_movies', movies: data.Search }),
-      onFinally: () => setIsFetchingMovies(false)
-    })
+    setUrl(`${baseUrl}&s=${searchMovie.value}`)
   }
 
-  return (
-    <>
-      <NavBar movies={state.movies} onSearchMovie={handleSearchMovie} />
-      <Main movies={state.movies} isFetchingMovies={isFetchingMovies} />
-    </>
-  )
+  return isError
+    ? <p>Aconteceu inesperado aconteceu. Você pode tentar novamente? {error.message}</p>
+    : (
+      <>
+        <NavBar onSearchMovie={handleSearchMovie} movies={data} />
+        <Main movies={data} isFetchingMovies={isLoading} />
+      </>
+    )
 }
 
 export { App }

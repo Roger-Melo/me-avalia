@@ -22,7 +22,7 @@ const NavBar = ({ movies, onSearchMovie }) => {
         />
         <button className="btn-search">Buscar</button>
       </form>
-      <p className="num-results"><strong>{movies.length}</strong> Resultados</p>
+      <p className="num-results"><strong>{movies?.length}</strong> Resultados</p>
     </nav>
   )
 }
